@@ -9,28 +9,49 @@
 		}
 	</style>
 </head>
-<body>
-	<video id="player" class="video-js" controls 
-		data-setup="{'playbackRates':[1,1.5,2,4]}" 
-		style="width: 100%; height: 100%;"
-		ondrop="drop(event)"
-		ondragover="allowDrop(event)">
-		<source type="video/mp4">
+<body ondrop="drop(event)" ondragover="allowDrop(event)">
+	<video id="player" class="video-js" style="height: 100%;width: 100%">
 	</video>
 	<script src="./video-js-7.8.4/video.min.js"></script>
 	<script>
+		let player;
+		let playlist=[];
+		window.onload=function(){
+			player = videojs("player",{
+				controls: true,
+				playbackRates: [0.5, 1, 1.5, 2, 5, 10],
+				autoplay: true,
+				muted: true
+			},function(){
+				this.on('ended', function() {
+					play();
+				});
+			});
+		}
+
 		function drop(e){
 			let dt = e.dataTransfer;
 			let files = dt.files;
+			playlist = [];
 			if(files.length>0){
-				let file = files[0];
-				let blob = window.URL.createObjectURL(file);
-				
-				let player = videojs("player");
-				player.src([{type:"video/mp4",src:blob}]);
-				player.load();
-
+				for(let i=0;i<files.length;i++){
+					let file = files[i];
+					let blob = window.URL.createObjectURL(file);
+					playlist.push({
+						type: "video/mp4",//file.type,
+						src:blob
+					})
+				}
+				play();
 				e.preventDefault();
+			}
+		}
+
+		function play(){
+			if(playlist.length>0){
+				player.src(playlist[0]);
+				player.load();
+				playlist.shift();
 			}
 		}
 
