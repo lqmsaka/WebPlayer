@@ -1,0 +1,38 @@
+<!DOCTYPE>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="./video-js-7.8.4/video-js.min.css">
+	<style type="text/css">
+		html, body{height: 100%; margin: 0;}
+		video{
+			border-style: thin;
+		}
+	</style>
+</head>
+<body>
+	<video id="player" class="video-js" controls 
+		data-setup="{'playbackRates':[1,1.5,2,4]}" 
+		style="width: 100%; height: 100%;"
+		ondrop="drop(event)"
+		ondragover="allowDrop(event)">
+		<source type="video/mp4">
+	</video>
+	<script src="./video-js-7.8.4/video.min.js"></script>
+	<script>
+		function drop(e){
+			let dt = e.dataTransfer;
+			let files = dt.files;
+			if(files.length>0){
+				let file = files[0];
+				let blob = window.URL.createObjectURL(file);
+				document.getElementById("player").src=blob;
+				e.preventDefault();
+			}
+		}
+
+		function allowDrop(e){
+			e.preventDefault();
+		}
+	</script>
+</body>
+</html>
