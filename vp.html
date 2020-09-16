@@ -90,6 +90,14 @@
 				case 105:
 					player.playbackRate=e.key;
 					break;
+				case 107:
+					if(player.playbackRate<=15)
+						player.playbackRate++;
+					break;
+				case 109:
+					if(player.playbackRate>=1)
+						player.playbackRate--;
+					break;
 			}
 		}
 	</script>
