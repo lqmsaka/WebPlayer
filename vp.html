@@ -1,0 +1,97 @@
+<!DOCTYPE>
+<html>
+<head>
+	<style type="text/css">
+		html, body{height: 100%; margin: 0;}
+	</style>
+</head>
+<body ondrop="drop(event)" ondragover="allowDrop(event)" onkeydown="keydown(event)">
+	<video id="player" controls style="height: 100%;width: 100%;background: black;" muted autoplay>
+	</video>
+	<script>
+		let playlist=[];
+		window.onload=function(){
+			player.addEventListener("endend",play);
+		}
+
+		function drop(e){
+			let dt = e.dataTransfer;
+			let files = dt.files;
+			playlist = [];
+			if(files.length>0){
+				for(let i=0;i<files.length;i++){
+					let file = files[i];
+					let blob = window.URL.createObjectURL(file);
+					playlist.push({
+						type: "video/mp4",//file.type,
+						src:blob
+					})
+				}
+				play();
+				e.preventDefault();
+			}
+		}
+
+		function play(){
+			if(playlist.length>0){
+				player.src=playlist[0].src;
+				player.load();
+				playlist.shift();
+			}
+		}
+
+		function allowDrop(e){
+			e.preventDefault();
+		}
+
+		function keydown(e){
+			switch(e.keyCode){
+				case 32:
+					break;
+				case 37:
+					player.currentTime-=10;
+					break;
+				case 38:
+					let v=player.volume+0.2;
+					if(v>1)
+						player.volume=1;
+					else
+						player.volume=v;
+					break;
+				case 39:
+					player.currentTime+=10;
+					break;
+				case 40:
+					v=player.volume-0.2;
+					if(v<0)
+						player.volume=0;
+					else
+						player.volume=v;
+					break;
+				case 48:
+				case 49:
+				case 50:
+				case 51:
+				case 52:
+				case 53:
+				case 54:
+				case 55:
+				case 56:
+				case 57:
+				case 96:
+				case 97:
+				case 98:
+				case 99:
+				case 100:
+				case 101:
+				case 102:
+				case 103:
+				case 104:
+				case 105:
+					player.playbackRate=e.key;
+					break;
+			}
+		}
+	</script>
+</body>
+</html>
