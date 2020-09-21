@@ -2,11 +2,13 @@
 <html>
 <head>
 	<style type="text/css">
-		html, body{height: 100%; margin: 0;}
+		html, body{height: 100%; margin: 0;background: black;}
+		/*video{top: 0;left: 0;right: 0;bottom: 0;position: absolute;margin: auto;}*/
+		video {height: 100%;width: 100%;}
 	</style>
 </head>
 <body ondrop="drop(event)" ondragover="allowDrop(event)" onkeydown="keydown(event)">
-	<video id="player" controls style="height: 100%;width: 100%;background: black;" muted autoplay>
+	<video id="player" controls muted autoplay>
 	</video>
 	<script>
 		let playlist=[];
