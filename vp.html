@@ -1,107 +1,143 @@
 <!DOCTYPE>
 <html>
+
 <head>
 	<style type="text/css">
-		html, body{height: 100%; margin: 0;background: black;}
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+			background: black;
+		}
+
 		/*video{top: 0;left: 0;right: 0;bottom: 0;position: absolute;margin: auto;}*/
-		video {height: 100%;width: 100%;}
+		video {
+			height: 100%;
+			width: 100%;
+		}
 	</style>
 </head>
+
 <body ondrop="drop(event)" ondragover="allowDrop(event)" onkeydown="keydown(event)">
 	<video id="player" controls muted autoplay>
 	</video>
 	<script>
-		let playlist=[];
-		window.onload=function(){
-			player.addEventListener("endend",play);
+		let playlist = [];
+		window.onload = function () {
+			player.addEventListener("endend", play);
 		}
 
-		function drop(e){
+		function drop(e) {
 			let dt = e.dataTransfer;
-			let files = dt.files;
+			let items = dt.items;
 			playlist = [];
-			if(files.length>0){
-				for(let i=0;i<files.length;i++){
-					let file = files[i];
-					let blob = window.URL.createObjectURL(file);
-					playlist.push({
-						type: "video/mp4",//file.type,
-						src:blob
-					})
+			for (let i = 0; i < items.length; i++) {
+				let item = items[i];
+				switch(item.kind){
+					case 'file':
+						let blob = window.URL.createObjectURL(item.getAsFile());
+						playlist.push({
+							type: "video/mp4",//file.type,
+							src: blob
+						});
+						break;
+					default:
+						item.getAsString(function(url){
+							playlist.push({
+								type: "video/mp4",//file.type,
+								src: url
+							});
+						});
+						break;
 				}
-				play();
-				e.preventDefault();
 			}
+			play();
+			e.preventDefault();
 		}
 
-		function play(){
-			if(playlist.length>0){
-				player.src=playlist[0].src;
+		function play() {
+			if (playlist.length > 0) {
+				player.src = playlist[0].src;
 				player.load();
 				playlist.shift();
 			}
 		}
 
-		function allowDrop(e){
+		function allowDrop(e) {
 			e.preventDefault();
 		}
 
-		function keydown(e){
-			switch(e.keyCode){
-				case 32:
+		function keydown(e) {
+			switch (e.keyCode) {
+				case 32://space
 					break;
-				case 37:
-					player.currentTime-=10;
+				case 37://left
+					if (e.ctrlKey) {
+						player.currentTime -= 10;
+						e.preventDefault();
+					}
 					break;
-				case 38:
-					let v=player.volume+0.2;
-					if(v>1)
-						player.volume=1;
-					else
-						player.volume=v;
+				case 38://up
+					// let v = player.volume + 0.2;
+					// if (v > 1)
+					// 	player.volume = 1;
+					// else
+					// 	player.volume = v;
 					break;
-				case 39:
-					player.currentTime+=10;
+				case 39://right
+					if (e.ctrlKey) {
+						player.currentTime += 10;
+						e.preventDefault();
+					}
 					break;
-				case 40:
-					v=player.volume-0.2;
-					if(v<0)
-						player.volume=0;
-					else
-						player.volume=v;
+				case 40://down
+					// v = player.volume - 0.2;
+					// if (v < 0)
+					// 	player.volume = 0;
+					// else
+					// 	player.volume = v;
 					break;
-				case 48:
-				case 49:
-				case 50:
-				case 51:
-				case 52:
-				case 53:
-				case 54:
-				case 55:
-				case 56:
-				case 57:
-				case 96:
-				case 97:
-				case 98:
-				case 99:
-				case 100:
-				case 101:
-				case 102:
-				case 103:
-				case 104:
-				case 105:
-					player.playbackRate=e.key;
+				case 48://0
+				case 49://1
+				case 50://2
+				case 51://3
+				case 52://4
+				case 96://num 0
+				case 97://num 1
+				case 98://num 2
+				case 99://num 3
+				case 100://num 4
+					player.playbackRate = e.key / 4;
 					break;
-				case 107:
-					if(player.playbackRate<=15)
+				case 53://5
+				case 54://6
+				case 101://num 5
+				case 102://num 6
+					player.playbackRate = (e.key - 3) / 2;
+					break;
+				case 55://7
+				case 56://8
+				case 57://9
+				case 103://num 7
+				case 104://num 8
+				case 105://num 9
+					player.playbackRate = e.key - 5;
+					break;
+				case 107:	//+
+					if (player.playbackRate <= 15)
 						player.playbackRate++;
+					else
+						player.playbackRate = 15;
 					break;
-				case 109:
-					if(player.playbackRate>=1)
+				case 109:	//-
+					if (player.playbackRate >= 1)
 						player.playbackRate--;
+					else
+						player.playbackRate = 0;
 					break;
 			}
 		}
 	</script>
 </body>
+
 </html>
